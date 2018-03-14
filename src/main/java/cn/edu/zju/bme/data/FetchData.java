@@ -78,10 +78,12 @@ public class FetchData {
             while (emrResult.next()) {
                 String memo = emrResult.getString("MEMO");
                 if (memo.contains("病程")) {
+                    if (memo.equals("首次病程记录")) continue; // 舍弃首次病程记录
                     String emr = emrResult.getString("EMR_CONTEXT_XML");
                     if (emr == null) continue;
                     String emrId = emrResult.getString("EMR_ID");
-                    BufferedWriter out = new BufferedWriter(new FileWriter(new File(rootPath+"/"+patientId+"_"+visitId+"_"+emrId+".html")));
+                    File outFile = new File(rootPath+"/"+patientId+"_"+visitId+"_"+emrId+".html");
+                    BufferedWriter out = new BufferedWriter(new FileWriter(outFile));
                     out.write(emr);
                     out.flush();
                     out.close();
@@ -100,6 +102,5 @@ public class FetchData {
     public static void main(String[] args) {
         FetchData fetchData = new FetchData();
         fetchData.fetchAndSave("resources/origin");
-
     }
 }
